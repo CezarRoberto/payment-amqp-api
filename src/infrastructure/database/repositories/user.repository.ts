@@ -1,5 +1,5 @@
 import { UsersInterface } from '@domain/user/interfaces/users-interface';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { MyLoggerService } from '@infrastructure/services/logger/logger.service';
 import { User } from '@domain/user/entities/user';
@@ -23,9 +23,7 @@ export class UserRepository implements UsersInterface {
       PrismaClientUnknownRequestError ||
       PrismaClientRustPanicError
     ) {
-      this.loggerService.error(`Error on ${method}, ${err}`, {
-        store: true,
-      });
+      this.loggerService.error(`Error on ${method}, ${err}`);
       throw new HttpException(
         `Fail to ${method}, error-message: ${err}`,
         HttpStatus.CONFLICT,

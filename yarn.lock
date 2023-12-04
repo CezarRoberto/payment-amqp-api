@@ -995,7 +995,7 @@
     picocolors "^1.0.0"
     tslib "^2.6.0"
 
-"@prisma/client@5.6.0":
+"@prisma/client@^5.6.0":
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-5.6.0.tgz#1c15932250d5658fe0127e62faf4ecd96a877259"
   integrity sha512-mUDefQFa1wWqk4+JhKPYq8BdVoFk9NFMBXUI8jAkBfQTtgx8WPx02U2HB/XbAz3GSUJpeJOKJQtNvaAIDs6sug==

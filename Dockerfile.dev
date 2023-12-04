@@ -1,0 +1,24 @@
+FROM node:18-alpine
+WORKDIR /app
+
+ARG UID=1000
+ARG GID=1000
+
+RUN apk update && apk add git
+
+RUN deluser --remove-home node
+RUN addgroup -g "${GID}" -S node
+RUN adduser -u "$UID" -S -G node node
+
+RUN mkdir -p /node_modules && chown node:node -R /node_modules /app
+
+USER node
+
+COPY --chown=node:node . /app
+
+RUN yarn install --frozen-lockfile
+RUN yarn prisma generate
+
+EXPOSE 3000
+
+CMD yarn prisma migrate deploy && yarn start:dev

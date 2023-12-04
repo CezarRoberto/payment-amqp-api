@@ -73,6 +73,19 @@ export class UserRepository implements UsersInterface {
     }
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+      return user;
+    } catch (err) {
+      this.ThrowErrorAndLogItOut(err, this.findById.name);
+    }
+  }
+
   async delete(id: string): Promise<void> {
     try {
       await this.prisma.user.delete({

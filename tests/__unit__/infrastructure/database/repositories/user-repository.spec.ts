@@ -2,7 +2,7 @@ import { User } from '@domain/user/entities/user';
 import { PrismaService } from '@infrastructure/database/prisma.service';
 import { UserRepository } from '@infrastructure/database/repositories/user.repository';
 import { MyLoggerService } from '@infrastructure/services/logger/logger.service';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';

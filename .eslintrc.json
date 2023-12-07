@@ -40,7 +40,8 @@
           "**/*.spec.ts",
           "src/infrastructure/database/Prisma.context.ts",
           "**/*.e2e-spec.ts",
-          "jest.config.js"
+          "jest.config.js",
+          "**/prisma/prisma-test-environment.ts"
         ]
       }
     ],

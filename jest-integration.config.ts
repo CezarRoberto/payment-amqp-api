@@ -5,5 +5,5 @@ export default {
   collectCoverageFrom: [
     '<rootDir>/src/application/**/controllers/*Controller.ts',
   ],
-  testRegex: '.*\\.*e2e-test\\.ts$',
+  testRegex: '.*\\.test\\.ts$',
 };

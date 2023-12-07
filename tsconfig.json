@@ -28,6 +28,6 @@
     "resolveJsonModule": true,
     "rootDirs": ["src", "tests"]
   },
-  "include": ["src", "tests"],
+  "include": ["src", "tests", "prisma"],
   "exclude": ["dist", "node_modules"]
 }

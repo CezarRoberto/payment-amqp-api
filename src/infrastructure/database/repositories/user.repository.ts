@@ -82,7 +82,7 @@ export class UserRepository implements UsersInterface {
       });
       return user;
     } catch (err) {
-      this.ThrowErrorAndLogItOut(err, this.findById.name);
+      this.ThrowErrorAndLogItOut(err, this.findByEmail.name);
     }
   }
 

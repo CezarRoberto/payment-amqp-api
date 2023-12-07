@@ -79,4 +79,41 @@ describe('User Repository', () => {
       );
     });
   });
+
+  describe('find By Email', () => {
+    it('should be able to find a user by email ', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      const userMock = makefakeUserMock();
+
+      ctxPrisma.user.findUnique = jest.fn().mockResolvedValue(userMock);
+
+      const httpRequest = {
+        email: 'john.doe@example.com',
+      };
+
+      const httpResponse = await sut.findByEmail(httpRequest.email);
+
+      expect(httpResponse).toEqual(userMock);
+    });
+
+    it('should be able to throw a new error and http ERROR when something went wrong', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      ctxPrisma.user.findUnique = jest
+        .fn()
+        .mockRejectedValue(
+          new Error() instanceof PrismaClientKnownRequestError,
+        );
+
+        const httpRequest = {
+          email: 'john.doe@example.com',
+        };
+  
+      await expect(sut.findByEmail(httpRequest.email)).rejects.toThrow(HttpException);
+      await expect(sut.findByEmail(httpRequest.email)).rejects.toThrow(
+        `Fail to findByEmail, error-message: false`,
+      );
+    });
+  });
 });

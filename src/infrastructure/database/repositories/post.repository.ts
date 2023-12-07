@@ -62,7 +62,8 @@ export class PostRepository implements PostsInterface {
         where: {
           published: true
         }
-      })
+      });
+
       return {
         posts: allPosts,
         numberPosts: postsNumber,

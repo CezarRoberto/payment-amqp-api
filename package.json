@@ -12,8 +12,8 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --runInBand --detectOpenHandles --passWithNoTests",
-    "test:watch": "jest --runInBand --detectOpenHandles --passWithNoTests --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:unit": "jest -c jest-unit.config.ts",
     "test:integration": "jest -c jest-integration.config.ts --detectOpenHandles --runInBand --forceExit"

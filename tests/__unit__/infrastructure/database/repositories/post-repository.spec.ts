@@ -12,7 +12,7 @@ import {
 
 interface ISutTypes {
   ctxPrisma: PrismaClient;
-  ctxLogger: Promise<MyLoggerService>;
+  ctxLogger: MyLoggerService;
   sut: PostRepository;
 }
 
@@ -23,7 +23,7 @@ const makeSut = async (): Promise<ISutTypes> => {
 
   const ctxPrisma = moduleRef.get<PrismaClient>(PrismaService);
   const sut = moduleRef.get<PostRepository>(PostRepository);
-  const ctxLogger = moduleRef.resolve<MyLoggerService>(MyLoggerService);
+  const ctxLogger = moduleRef.get<MyLoggerService>(MyLoggerService);
 
   return {
     ctxLogger,
@@ -71,7 +71,10 @@ describe('Post Repository', () => {
       ctxPrisma.post.create = jest
         .fn()
         .mockRejectedValue(
-          new Error() instanceof PrismaClientKnownRequestError,
+          new PrismaClientKnownRequestError('error_create_method', {
+            clientVersion: 'client1',
+            code: '300',
+          }),
         );
 
       const httpRequest = {
@@ -84,7 +87,7 @@ describe('Post Repository', () => {
 
       await expect(sut.create(httpRequest.body)).rejects.toThrow(HttpException);
       await expect(sut.create(httpRequest.body)).rejects.toThrow(
-        'Fail to create, error-message: false',
+        'Fail to create, error-message: PrismaClientKnownRequestError: error_create_method',
       );
     });
   });
@@ -111,17 +114,15 @@ describe('Post Repository', () => {
       expect(postsArray.some((post) => post.published === true)).toBe(true);
     });
 
-    test('should be able to throw error when something went wrong', async () => {
+    test('should be able to throw error: PrismaClientKnownRequestError', async () => {
       const { ctxPrisma, sut } = await makeSut();
 
-      ctxPrisma.post.findMany = jest
-        .fn()
-        .mockRejectedValue(
-          new PrismaClientKnownRequestError('ERROR_KNOWN_PRSIMA', {
-            clientVersion: 'client1',
-            code: '300',
-          }),
-        );
+      ctxPrisma.post.findMany = jest.fn().mockRejectedValue(
+        new PrismaClientKnownRequestError('ERROR_KNOWN_PRSIMA', {
+          clientVersion: 'client1',
+          code: '300',
+        }),
+      );
 
       await expect(sut.feed()).rejects.toThrow(HttpException);
       await expect(sut.feed()).rejects.toThrow(
@@ -167,11 +168,12 @@ describe('Post Repository', () => {
     test('should be able to throw error when something went wrong', async () => {
       const { ctxPrisma, sut } = await makeSut();
 
-      ctxPrisma.post.findUnique = jest
-        .fn()
-        .mockRejectedValue(
-          new Error() instanceof PrismaClientKnownRequestError,
-        );
+      ctxPrisma.post.findUnique = jest.fn().mockRejectedValue(
+        new PrismaClientKnownRequestError('ERROR_KNOWN_PRSIMA', {
+          clientVersion: 'client1',
+          code: '300',
+        }),
+      );
 
       const httpRequest = {
         body: {
@@ -183,7 +185,7 @@ describe('Post Repository', () => {
         HttpException,
       );
       await expect(sut.findOne(httpRequest.body.id)).rejects.toThrow(
-        'Fail to findOne, error-message: false',
+        'Fail to findOne, error-message: PrismaClientKnownRequestError: ERROR_KNOWN_PRSIMA',
       );
     });
   });

@@ -12,7 +12,7 @@ import {
 
 interface ISutTypes {
   ctxPrisma: PrismaClient;
-  ctxLogger: Promise<MyLoggerService>;
+  ctxLogger: MyLoggerService;
   sut: UserRepository;
 }
 
@@ -23,7 +23,7 @@ const makeSut = async (): Promise<ISutTypes> => {
 
   const ctxPrisma = moduleRef.get<PrismaClient>(PrismaService);
   const sut = moduleRef.get<UserRepository>(UserRepository);
-  const ctxLogger = moduleRef.resolve<MyLoggerService>(MyLoggerService);
+  const ctxLogger = moduleRef.get<MyLoggerService>(MyLoggerService);
 
   return {
     ctxLogger,

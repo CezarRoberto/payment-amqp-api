@@ -8,7 +8,7 @@ type IParseLoggerInputToPinoFormatParams<Payload, Type> = {
   loggerData?: ILoggerDataDTO<Payload, Type>;
 };
 
-@Injectable({ scope: Scope.TRANSIENT })
+@Injectable()
 export class MyLoggerService extends ConsoleLogger {
   readonly instance: Logger;
   readonly envs: any;

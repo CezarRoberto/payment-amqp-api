@@ -5,7 +5,10 @@ import { MyLoggerService } from '@infrastructure/services/logger/logger.service'
 import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+} from '@prisma/client/runtime/library';
 
 interface ISutTypes {
   ctxPrisma: PrismaClient;
@@ -58,13 +61,16 @@ describe('User Repository', () => {
       expect(httpResponse).toEqual(userMock);
     });
 
-    it('should be able to throw a new error and http ERROR when something went wrong', async () => {
+    it('should be able to throw a new error: PrismaClientKnownRequestError', async () => {
       const { ctxPrisma, sut } = await makeSut();
 
       ctxPrisma.user.create = jest
         .fn()
         .mockRejectedValue(
-          new Error() instanceof PrismaClientKnownRequestError,
+          new PrismaClientKnownRequestError('ERROR', {
+            clientVersion: '200',
+            code: '200',
+          }),
         );
 
       const httpRequest = {
@@ -75,7 +81,7 @@ describe('User Repository', () => {
       };
       await expect(sut.create(httpRequest.body)).rejects.toThrow(HttpException);
       await expect(sut.create(httpRequest.body)).rejects.toThrow(
-        `Fail to create, error-message: false`,
+        `Fail to create, error-message: PrismaClientKnownRequestError: ERROR`,
       );
     });
   });
@@ -97,22 +103,26 @@ describe('User Repository', () => {
       expect(httpResponse).toEqual(userMock);
     });
 
-    it('should be able to throw a new error and http ERROR when something went wrong', async () => {
+    it('should be able to throw a new error: PrismaClientUnknownRequestError', async () => {
       const { ctxPrisma, sut } = await makeSut();
 
       ctxPrisma.user.findUnique = jest
         .fn()
         .mockRejectedValue(
-          new Error() instanceof PrismaClientKnownRequestError,
+          new PrismaClientUnknownRequestError('UNKOWN ERROR', {
+            clientVersion: '200',
+          }),
         );
 
-        const httpRequest = {
-          email: 'john.doe@example.com',
-        };
-  
-      await expect(sut.findByEmail(httpRequest.email)).rejects.toThrow(HttpException);
+      const httpRequest = {
+        email: 'john.doe@example.com',
+      };
+
       await expect(sut.findByEmail(httpRequest.email)).rejects.toThrow(
-        `Fail to findByEmail, error-message: false`,
+        HttpException,
+      );
+      await expect(sut.findByEmail(httpRequest.email)).rejects.toThrow(
+        `Fail to findByEmail, error-message: PrismaClientUnknownRequestError: UNKOWN ERROR`,
       );
     });
   });

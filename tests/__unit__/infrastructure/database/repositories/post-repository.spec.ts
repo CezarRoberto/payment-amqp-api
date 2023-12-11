@@ -5,7 +5,10 @@ import { MyLoggerService } from '@infrastructure/services/logger/logger.service'
 import { HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientRustPanicError,
+} from '@prisma/client/runtime/library';
 
 interface ISutTypes {
   ctxPrisma: PrismaClient;
@@ -93,7 +96,7 @@ describe('Post Repository', () => {
       const postMockOne = makeFakePostMock();
       const postMockTwo = makeFakePostMock();
 
-      const postsArray = new Array(postMockOne, postMockTwo)
+      const postsArray = new Array(postMockOne, postMockTwo);
 
       ctxPrisma.post.findMany = jest.fn().mockResolvedValue(postsArray);
       ctxPrisma.post.count = jest.fn().mockResolvedValue(postsArray.length);
@@ -102,10 +105,10 @@ describe('Post Repository', () => {
 
       expect(httpResponse).toEqual({
         posts: postsArray,
-        numberPosts: postsArray.length
+        numberPosts: postsArray.length,
       });
-      
-      expect(postsArray.some(post => post.published === true)).toBe(true);
+
+      expect(postsArray.some((post) => post.published === true)).toBe(true);
     });
 
     test('should be able to throw error when something went wrong', async () => {
@@ -114,12 +117,30 @@ describe('Post Repository', () => {
       ctxPrisma.post.findMany = jest
         .fn()
         .mockRejectedValue(
-          new Error() instanceof PrismaClientKnownRequestError,
+          new PrismaClientKnownRequestError('ERROR_KNOWN_PRSIMA', {
+            clientVersion: 'client1',
+            code: '300',
+          }),
         );
 
       await expect(sut.feed()).rejects.toThrow(HttpException);
       await expect(sut.feed()).rejects.toThrow(
-        'Fail to feed, error-message: false',
+        'Fail to feed, error-message: PrismaClientKnownRequestError: ERROR_KNOWN_PRSIMA',
+      );
+    });
+
+    test('should be able to throw error when something went RUST PANIC', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      ctxPrisma.post.findMany = jest
+        .fn()
+        .mockRejectedValue(
+          new PrismaClientRustPanicError('client-1', 'Rust panic error'),
+        );
+
+      await expect(sut.feed()).rejects.toThrow(HttpException);
+      await expect(sut.feed()).rejects.toThrow(
+        'Fail to feed, error-message: PrismaClientRustPanicError: client-1',
       );
     });
   });
@@ -141,7 +162,6 @@ describe('Post Repository', () => {
       const httpResponse = await sut.findOne(httpRequest.body.id);
 
       expect(httpResponse).toEqual(postMock);
-
     });
 
     test('should be able to throw error when something went wrong', async () => {
@@ -153,14 +173,15 @@ describe('Post Repository', () => {
           new Error() instanceof PrismaClientKnownRequestError,
         );
 
+      const httpRequest = {
+        body: {
+          id: '123e4567-e89b-12d3-a456-426614174000',
+        },
+      };
 
-        const httpRequest = {
-          body: {
-            id: '123e4567-e89b-12d3-a456-426614174000',
-          },
-        };
-
-      await expect(sut.findOne(httpRequest.body.id)).rejects.toThrow(HttpException);
+      await expect(sut.findOne(httpRequest.body.id)).rejects.toThrow(
+        HttpException,
+      );
       await expect(sut.findOne(httpRequest.body.id)).rejects.toThrow(
         'Fail to findOne, error-message: false',
       );

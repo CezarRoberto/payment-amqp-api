@@ -19,8 +19,8 @@ export class PostRepository implements PostsInterface {
   private ThrowErrorAndLogItOut(err: unknown, method: string) {
     if (
       err instanceof PrismaClientKnownRequestError ||
-      PrismaClientUnknownRequestError ||
-      PrismaClientRustPanicError
+      err instanceof PrismaClientUnknownRequestError ||
+      err instanceof PrismaClientRustPanicError
     ) {
       this.loggerService.error(`Error on ${method}, ${err}`);
       throw new HttpException(

@@ -3,6 +3,7 @@ export interface Customer {
   email: string;
   description?: string;
   userId: string;
+  stripe_customer_id: string;
   createdAt: Date;
   updatedAt: Date;
 }

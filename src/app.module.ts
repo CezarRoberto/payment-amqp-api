@@ -7,6 +7,7 @@ import { LoggerModule } from '@infrastructure/services/logger/logger.module';
 import { UserModule } from '@infrastructure/modules/user.module';
 import { EnvsModule } from '@main/envs/envs.module';
 import { PostModule } from '@infrastructure/modules/post.module';
+import { PaymentModule } from '@infrastructure/services/payment/payment.module';
 
 @Module({
   controllers: [AppController],
@@ -16,6 +17,7 @@ import { PostModule } from '@infrastructure/modules/post.module';
     HttpModule,
     PrismaModule,
     LoggerModule,
+    PaymentModule,
     PostModule,
     UserModule,
   ],

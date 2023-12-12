@@ -1,7 +1,6 @@
-import { CustomerInterface } from '@domain/customer/interfaces/customer-interface';
 import { MyLoggerService } from '@infrastructure/services/logger/logger.service';
 import { PrismaService } from '../prisma.service';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   PrismaClientKnownRequestError,
   PrismaClientUnknownRequestError,
@@ -9,7 +8,9 @@ import {
 } from '@prisma/client/runtime/library';
 import { Customer } from '@domain/customer/entities/customer';
 import { User } from '@domain/user/entities/user';
+import { CustomerInterface } from '@application/protocols/customer/customer-interface';
 
+@Injectable()
 export class CustomerRepository implements CustomerInterface {
   constructor(
     private readonly prisma: PrismaService,

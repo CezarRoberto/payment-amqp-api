@@ -29,14 +29,14 @@ export class PaymentService implements PaymentInterface {
     }
   }
 
-  async createCustomer(name: string, email: string): Promise<string> {
+  async createCustomer<T = Stripe.Customer>(name: string, email: string): Promise<T> {
     try {
-      const { id } = await this.stripe.customers.create({
+      const costumer  = await this.stripe.customers.create({
         name,
         email,
       });
 
-      return id;
+      return costumer as T;
     } catch (error) {
       this.ThrowErrorAndLogItOut(error, this.createCustomer.name);
     }

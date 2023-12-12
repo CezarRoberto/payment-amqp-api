@@ -1,5 +1,5 @@
+import { Customer } from '@domain/customer/entities/customer';
 import { User } from '@domain/user/entities/user';
-import { Customer } from '../entities/customer';
 
 export interface CustomerInterface {
   create(

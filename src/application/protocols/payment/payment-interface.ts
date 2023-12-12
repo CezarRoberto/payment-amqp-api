@@ -1,3 +1,3 @@
 export interface PaymentInterface {
-  createCustomer(name: string, email: string): Promise<string>
+  createCustomer<T>(name: string, email: string): Promise<T>
 }

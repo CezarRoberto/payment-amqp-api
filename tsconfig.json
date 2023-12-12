@@ -23,6 +23,7 @@
       "@domain/*": ["./domain/*"],
       "@infrastructure/*": ["./infrastructure/*"],
       "@data/*": ["./data/*"],
+      "@presentation/*": ["./presentation/*"],
       "@main/*": ["./main/*"],
       "@test/*": ["../tests/*"]
     },

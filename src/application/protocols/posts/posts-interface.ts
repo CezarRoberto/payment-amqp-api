@@ -1,4 +1,4 @@
-import { Post } from '../entities/post';
+import { Post } from "@domain/post/entities/post";
 
 export interface PostsInterface {
   create(data: Pick<Post, 'authorId' | 'title' | 'content'>): Promise<Post>;

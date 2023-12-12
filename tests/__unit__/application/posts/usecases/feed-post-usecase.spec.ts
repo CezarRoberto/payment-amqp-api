@@ -1,4 +1,4 @@
-import { FeedUseCase } from '@application/posts/usecases/feed-usecase';
+import { FeedUseCase } from '@application/data/posts/usecases/feed-usecase';
 import { PostRepository } from '@infrastructure/database/repositories/post.repository';
 import { Post } from '@prisma/client';
 import { MockProxy, mock } from 'jest-mock-extended';

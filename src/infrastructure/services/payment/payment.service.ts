@@ -1,4 +1,4 @@
-import { PaymentInterface } from '@data/protocols/payment/payment-interface';
+import { PaymentInterface } from '@application/protocols/payment/payment-interface';
 import envs from '@main/envs';
 import {
   Injectable,

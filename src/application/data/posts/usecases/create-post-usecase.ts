@@ -1,8 +1,5 @@
-import {
-  CreatePost,
-  CreatePostUseCaseInterface,
-} from '@data/usecases/posts/create-post-usecase';
 import { Post } from '@domain/post/entities/post';
+import { CreatePost, CreatePostUseCaseInterface } from '@domain/post/usecases/create-post-usecase';
 import { PostRepository } from '@infrastructure/database/repositories/post.repository';
 import { UserRepository } from '@infrastructure/database/repositories/user.repository';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';

@@ -1,8 +1,8 @@
 import { Body, Controller, HttpCode, Post, UsePipes,  } from "@nestjs/common";
-import { CreateUserUseCase } from "../usecases/create-user-usecase";
 import { ZodValidationAdapter } from "@main/adapters/zod-validation-adapter";
-import { CreateUserSchema } from "../validations/user-validations";
-import { CreateUser } from "@data/usecases/users/create-user";
+import { CreateUser } from "@domain/usecases/users/create-user";
+import { CreateUserUseCase } from "@application/data/users/usecases/create-user-usecase";
+import { CreateUserSchema } from "@application/data/users/validations/user-validations";
 
 @Controller('user')
 export class CreateUserController {

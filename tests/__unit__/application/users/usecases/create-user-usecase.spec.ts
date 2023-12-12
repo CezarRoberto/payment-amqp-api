@@ -1,4 +1,4 @@
-import { CreateUserUseCase } from '@application/users/usecases/create-user-usecase';
+import { CreateUserUseCase } from '@application/data/users/usecases/create-user-usecase';
 import { User } from '@domain/user/entities/user';
 import { UserRepository } from '@infrastructure/database/repositories/user.repository';
 import { HttpException, HttpStatus } from '@nestjs/common';

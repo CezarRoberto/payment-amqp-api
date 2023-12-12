@@ -1,4 +1,4 @@
-import { CreatePostUseCase } from '@application/posts/usecases/create-post-usecase';
+import { CreatePostUseCase } from '@application/data/posts/usecases/create-post-usecase';
 import { Post } from '@domain/post/entities/post';
 import { User } from '@domain/user/entities/user';
 import { PostRepository } from '@infrastructure/database/repositories/post.repository';

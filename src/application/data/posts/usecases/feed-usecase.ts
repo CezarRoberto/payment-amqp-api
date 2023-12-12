@@ -1,5 +1,5 @@
-import { FeedUseCaseInterface } from '@data/usecases/posts/feed-usecase';
 import { Post } from '@domain/post/entities/post';
+import { FeedUseCaseInterface } from '@domain/post/usecases/feed-usecase';
 import { PostRepository } from '@infrastructure/database/repositories/post.repository';
 import { Injectable } from '@nestjs/common';
 

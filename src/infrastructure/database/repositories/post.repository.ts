@@ -1,4 +1,3 @@
-import { PostsInterface } from '@domain/post/interfaces/posts-interface';
 import { MyLoggerService } from '@infrastructure/services/logger/logger.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
@@ -8,6 +7,7 @@ import {
   PrismaClientRustPanicError,
 } from '@prisma/client/runtime/library';
 import { Post } from '@domain/post/entities/post';
+import { PostsInterface } from '@application/protocols/posts/posts-interface';
 
 @Injectable()
 export class PostRepository implements PostsInterface {
@@ -51,7 +51,7 @@ export class PostRepository implements PostsInterface {
     }
   }
 
-  async feed(): Promise<{ posts: Post[], numberPosts: number }> {
+  async feed(): Promise<{ posts: Post[]; numberPosts: number }> {
     try {
       const allPosts = await this.prisma.post.findMany({
         where: {
@@ -60,14 +60,14 @@ export class PostRepository implements PostsInterface {
       });
       const postsNumber = await this.prisma.post.count({
         where: {
-          published: true
-        }
+          published: true,
+        },
       });
 
       return {
         posts: allPosts,
         numberPosts: postsNumber,
-      }
+      };
     } catch (error) {
       this.ThrowErrorAndLogItOut(error, this.feed.name);
     }
@@ -77,11 +77,11 @@ export class PostRepository implements PostsInterface {
     try {
       const post = await this.prisma.post.findUnique({
         where: {
-          id
-        }
-      })
+          id,
+        },
+      });
 
-      return post
+      return post;
     } catch (error) {
       this.ThrowErrorAndLogItOut(error, this.findOne.name);
     }

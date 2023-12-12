@@ -1,4 +1,3 @@
-import { UsersInterface } from '@domain/user/interfaces/users-interface';
 import { HttpException, HttpStatus, Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { MyLoggerService } from '@infrastructure/services/logger/logger.service';
@@ -9,6 +8,7 @@ import {
   PrismaClientRustPanicError,
 } from '@prisma/client/runtime/library';
 import { Post } from '@domain/post/entities/post';
+import { UsersInterface } from '@application/protocols/users/users-interface';
 
 @Injectable()
 export class UserRepository implements UsersInterface {

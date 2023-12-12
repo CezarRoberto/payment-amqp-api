@@ -1,5 +1,5 @@
 import { Post } from "@domain/post/entities/post";
-import { User } from "../entities/user";
+import { User } from "@domain/user/entities/user";
 
 export interface UsersInterface {
   create(data: Pick<User, 'email' | 'name'>): Promise<User>

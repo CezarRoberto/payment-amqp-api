@@ -1,5 +1,5 @@
-import { CreateUser } from '@domain/usecases/users/create-user';
 import { User } from '@domain/user/entities/user';
+import { CreateUser } from '@domain/user/usecases/create-user';
 import { UserRepository } from '@infrastructure/database/repositories/user.repository';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 

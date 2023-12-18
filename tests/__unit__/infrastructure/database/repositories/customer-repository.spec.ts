@@ -1,5 +1,4 @@
 import { Customer } from '@domain/customer/entities/customer';
-import { User } from '@domain/user/entities/user';
 import { PrismaService } from '@infrastructure/database/prisma.service';
 import { CustomerRepository } from '@infrastructure/database/repositories/customer.repository';
 import { MyLoggerService } from '@infrastructure/services/logger/logger.service';
@@ -39,14 +38,6 @@ const makeFakeCustomerMock = (): Customer => ({
   description: 'Fake Descriptiton',
   stripe_customer_id: 'cus_bb41facf0047',
   userId: '67072848-54e6-495a-a4d4-050ba21d048e',
-  createdAt: new Date('2023-01-01T00:00:00.000Z'),
-  updatedAt: new Date('2023-12-04T00:00:00.000Z'),
-});
-
-const makeFakeUserMock = (): User => ({
-  id: '123e4567-e89b-12d3-a456-426614174000',
-  name: 'John Doe',
-  email: 'john.doe@example.com',
   createdAt: new Date('2023-01-01T00:00:00.000Z'),
   updatedAt: new Date('2023-12-04T00:00:00.000Z'),
 });

@@ -41,4 +41,20 @@ export class PaymentService implements PaymentInterface {
       this.ThrowErrorAndLogItOut(error, this.createCustomer.name);
     }
   }
+
+  async createPaymentIntent<T = Stripe.PaymentIntent>(amount: number, orderId: string): Promise<T> {
+    try {
+      const paymentIntent = await this.stripe.paymentIntents.create({
+        amount,
+        currency: 'brl',
+        metadata: {
+          orderId
+        }
+      })
+
+      return paymentIntent as T
+    } catch (error) {
+      this.ThrowErrorAndLogItOut(error, this.createPaymentIntent.name)
+    }
+  }
 }

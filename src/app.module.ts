@@ -9,6 +9,7 @@ import { EnvsModule } from '@main/envs/envs.module';
 import { PostModule } from '@infrastructure/modules/post.module';
 import { PaymentModule } from '@infrastructure/services/payment/payment.module';
 import { CustomerModule } from '@infrastructure/modules/customer.module';
+import { MessageModule } from '@infrastructure/services/messaging/message.module';
 
 @Module({
   controllers: [AppController],
@@ -22,6 +23,7 @@ import { CustomerModule } from '@infrastructure/modules/customer.module';
     PostModule,
     UserModule,
     CustomerModule,
+    MessageModule,
   ],
 })
 export class AppModule {}

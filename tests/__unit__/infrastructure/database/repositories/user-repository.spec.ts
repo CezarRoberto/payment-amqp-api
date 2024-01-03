@@ -198,7 +198,7 @@ describe('User Repository', () => {
       const userMock = makefakeUserMock();
       const postMock = makeFakePostMock();
 
-      const userPlusPosts: (User & { posts: Post[] } | null) = {
+      const userPlusPosts: (User & { posts: Post[] }) | null = {
         ...userMock,
         posts: new Array(postMock),
       };
@@ -228,7 +228,9 @@ describe('User Repository', () => {
         id: '123e4567-e89b-12d3-a456-426614174000',
       };
 
-      await expect(sut.listPosts(httpRequest.id)).rejects.toThrow(HttpException);
+      await expect(sut.listPosts(httpRequest.id)).rejects.toThrow(
+        HttpException,
+      );
       await expect(sut.listPosts(httpRequest.id)).rejects.toThrow(
         `Fail to listPosts, error-message: PrismaClientUnknownRequestError: UNKOWN ERROR`,
       );
@@ -247,9 +249,197 @@ describe('User Repository', () => {
         id: '123e4567-e89b-12d3-a456-426614174000',
       };
 
-      await expect(sut.listPosts(httpRequest.id)).rejects.toThrow(HttpException);
+      await expect(sut.listPosts(httpRequest.id)).rejects.toThrow(
+        HttpException,
+      );
       await expect(sut.listPosts(httpRequest.id)).rejects.toThrow(
         `Fail to listPosts, error-message: PrismaClientRustPanicError: CLIENT_RUST_PANIC`,
+      );
+    });
+  });
+
+  describe('Update User', () => {
+    it('should be able to update a user by id and new data', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      const userMock = makefakeUserMock();
+
+      ctxPrisma.user.update = jest.fn().mockResolvedValueOnce(userMock);
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        data: {
+          name: 'new_name',
+          email: 'new_email',
+        },
+      };
+
+      const httpResponse = await sut.update(httpRequest.id, httpRequest.data);
+
+      expect(httpResponse).toEqual(userMock);
+    });
+
+    it('should be able to throw a new error: PrismaClientUnknownRequestError', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      ctxPrisma.user.update = jest.fn().mockRejectedValue(
+        new PrismaClientUnknownRequestError('UNKOWN ERROR', {
+          clientVersion: '200',
+        }),
+      );
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        data: {
+          name: 'new_name',
+          email: 'new_email',
+        },
+      };
+
+      await expect(
+        sut.update(httpRequest.id, httpRequest.data),
+      ).rejects.toThrow(HttpException);
+      await expect(
+        sut.update(httpRequest.id, httpRequest.data),
+      ).rejects.toThrow(
+        `Fail to update, error-message: PrismaClientUnknownRequestError: UNKOWN ERROR`,
+      );
+    });
+
+    it('should be able to throw a new error: PrismaClientRustPanicError', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      ctxPrisma.user.update = jest
+        .fn()
+        .mockRejectedValue(
+          new PrismaClientRustPanicError('CLIENT_RUST_PANIC', '200'),
+        );
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        data: {
+          name: 'new_name',
+          email: 'new_email',
+        },
+      };
+
+      await expect(
+        sut.update(httpRequest.id, httpRequest.data),
+      ).rejects.toThrow(HttpException);
+      await expect(
+        sut.update(httpRequest.id, httpRequest.data),
+      ).rejects.toThrow(
+        `Fail to update, error-message: PrismaClientRustPanicError: CLIENT_RUST_PANIC`,
+      );
+    });
+  });
+
+  describe('Delete User', () => {
+    it('should be able to delete a user  by id', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      const userMock = makefakeUserMock();
+
+      ctxPrisma.user.delete = jest.fn().mockResolvedValueOnce(userMock);
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+      };
+
+      const httpResponse = await sut.delete(httpRequest.id);
+
+      expect(httpResponse).toBeUndefined();
+    });
+
+    it('should be able to throw a new error: PrismaClientUnknownRequestError', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      ctxPrisma.user.delete = jest.fn().mockRejectedValue(
+        new PrismaClientUnknownRequestError('UNKOWN ERROR', {
+          clientVersion: '200',
+        }),
+      );
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+      };
+      await expect(sut.delete(httpRequest.id)).rejects.toThrow(HttpException);
+      await expect(sut.delete(httpRequest.id)).rejects.toThrow(
+        `Fail to delete, error-message: PrismaClientUnknownRequestError: UNKOWN ERROR`,
+      );
+    });
+
+    it('should be able to throw a new error: PrismaClientRustPanicError', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      ctxPrisma.user.delete = jest
+        .fn()
+        .mockRejectedValue(
+          new PrismaClientRustPanicError('CLIENT_RUST_PANIC', '200'),
+        );
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+      };
+
+      await expect(sut.delete(httpRequest.id)).rejects.toThrow(HttpException);
+      await expect(sut.delete(httpRequest.id)).rejects.toThrow(
+        `Fail to delete, error-message: PrismaClientRustPanicError: CLIENT_RUST_PANIC`,
+      );
+    });
+  });
+
+  describe('Delete User', () => {
+    it('should be able to delete a user  by id', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      const userMock = makefakeUserMock();
+
+      ctxPrisma.user.deleteMany = jest.fn().mockResolvedValueOnce(userMock);
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+      };
+
+      const httpResponse = await sut.deleteMany(httpRequest.id);
+
+      expect(httpResponse).toBeUndefined();
+    });
+
+    it('should be able to throw a new error: PrismaClientUnknownRequestError', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      ctxPrisma.user.deleteMany = jest.fn().mockRejectedValue(
+        new PrismaClientUnknownRequestError('UNKOWN ERROR', {
+          clientVersion: '200',
+        }),
+      );
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+      };
+      await expect(sut.deleteMany(httpRequest.id)).rejects.toThrow(HttpException);
+      await expect(sut.deleteMany(httpRequest.id)).rejects.toThrow(
+        `Fail to deleteMany, error-message: PrismaClientUnknownRequestError: UNKOWN ERROR`,
+      );
+    });
+
+    it('should be able to throw a new error: PrismaClientRustPanicError', async () => {
+      const { ctxPrisma, sut } = await makeSut();
+
+      ctxPrisma.user.deleteMany = jest
+        .fn()
+        .mockRejectedValue(
+          new PrismaClientRustPanicError('CLIENT_RUST_PANIC', '200'),
+        );
+
+      const httpRequest = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+      };
+
+      await expect(sut.deleteMany(httpRequest.id)).rejects.toThrow(HttpException);
+      await expect(sut.deleteMany(httpRequest.id)).rejects.toThrow(
+        `Fail to deleteMany, error-message: PrismaClientRustPanicError: CLIENT_RUST_PANIC`,
       );
     });
   });

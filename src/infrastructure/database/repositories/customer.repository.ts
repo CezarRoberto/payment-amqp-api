@@ -56,42 +56,18 @@ export class CustomerRepository implements CustomerInterface {
     }
   }
 
-  async findById(id: string): Promise<Customer & User> {
+  async findById(id: string): Promise<(Customer & { user: User }) | null> {
     try {
-      const customer = await this.prisma.customer.findFirst({
+      const customer = await this.prisma.customer.findUnique({
         where: {
-          OR: [
-            {
-              stripe_customer_id: id,
-            },
-            {
-              userId: id,
-            },
-          ],
+          id,
         },
-        select: {
-          id: true,
-          stripe_customer_id: true,
-          description: true,
-          email: true,
-          userId: true,
-          createdAt: true,
-          updatedAt: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
+        include: {
+          user: true,
         },
       });
 
-      const result = Object.assign({}, customer, customer.user);
-
-      return result;
+      return customer;
     } catch (error) {
       this.ThrowErrorAndLogItOut(error, this.findById.name);
     }

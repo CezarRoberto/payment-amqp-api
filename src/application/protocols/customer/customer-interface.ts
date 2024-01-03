@@ -8,6 +8,6 @@ export interface CustomerInterface {
       'email' | 'stripe_customer_id' | 'userId' | 'description'
     >,
   ): Promise<Customer>;
-  findById(id: string): Promise<Customer & User>;
+  findById(id: string): Promise<(Customer & { user: User }) | null>;
   delete(id: string): Promise<void>;
 }

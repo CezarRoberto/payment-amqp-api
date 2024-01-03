@@ -1,9 +1,6 @@
 import { PaymentInterface } from '@application/protocols/payment/payment-interface';
 import envs from '@main/envs';
-import {
-  Injectable,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import Stripe from 'stripe';
 import { MyLoggerService } from '../logger/logger.service';
 
@@ -29,9 +26,12 @@ export class PaymentService implements PaymentInterface {
     }
   }
 
-  async createCustomer<T = Stripe.Customer>(name: string, email: string): Promise<T> {
+  async createCustomer<T = Stripe.Customer>(
+    name: string,
+    email: string,
+  ): Promise<T> {
     try {
-      const costumer  = await this.stripe.customers.create({
+      const costumer = await this.stripe.customers.create({
         name,
         email,
       });
@@ -42,19 +42,34 @@ export class PaymentService implements PaymentInterface {
     }
   }
 
-  async createPaymentIntent<T = Stripe.PaymentIntent>(amount: number, orderId: string): Promise<T> {
+  async createPaymentIntent<T = Stripe.PaymentIntent>(
+    amount: number,
+    orderId: string,
+  ): Promise<T> {
     try {
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount,
         currency: 'brl',
         metadata: {
-          orderId
-        }
-      })
+          orderId,
+        },
+      });
 
-      return paymentIntent as T
+      return paymentIntent as T;
     } catch (error) {
-      this.ThrowErrorAndLogItOut(error, this.createPaymentIntent.name)
+      this.ThrowErrorAndLogItOut(error, this.createPaymentIntent.name);
+    }
+  }
+
+  async findCustomer<T = Stripe.PaymentIntent>(email: string): Promise<T> {
+    try {
+      const customers = await this.stripe.customers.list({ email: `${email}` });
+
+      const customer = customers.data[0];
+
+      return customer as T;
+    } catch (error) {
+      this.ThrowErrorAndLogItOut(error, this.createPaymentIntent.name);
     }
   }
 }

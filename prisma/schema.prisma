@@ -21,27 +21,29 @@ model User {
 }
 
 model Post {
-  id        String   @id @default(uuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  views     Int      @default(0)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String       @id @default(uuid())
+  title       String
+  content     String?
+  published   Boolean      @default(false)
+  views       Int          @default(0)
+  author      User         @relation(fields: [authorId], references: [id])
+  authorId    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  paymentLink PaymentLink?
 }
 
-model Product {
-  id               String      @id @default(uuid())
-  name             String
-  description      String?
-  active           Boolean     @default(true)
-  price            Int
-  stripe_productId String
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-  OrderItem        OrderItem[]
+model PaymentLink {
+  id                    String   @id @default(uuid())
+  purchasedNumber       Int      @default(0)
+  stripe_paymentlink_id String
+  currency              String
+  amount                Int
+  recurringInterval     String
+  postId                String   @unique
+  post                  Post     @relation(fields: [postId], references: [id])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 model Customer {
@@ -53,7 +55,6 @@ model Customer {
   stripe_customer_id String   @unique
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
-  Order              Order[]
 }
 
 enum PaymentStatus {
@@ -61,25 +62,4 @@ enum PaymentStatus {
   PROCESSING
   SUCCEEDED
   FAILED
-}
-
-model Order {
-  id            String        @id @default(uuid())
-  customerId    String
-  customer      Customer      @relation(fields: [customerId], references: [id])
-  totalAmount   Int
-  paymentStatus PaymentStatus @default(CREATED)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-}
-
-model OrderItem {
-  id        String   @id @default(uuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  orderId   String
-  unitPrice Int
-  quantity  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

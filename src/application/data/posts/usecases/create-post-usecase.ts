@@ -1,5 +1,8 @@
 import { Post } from '@domain/post/entities/post';
-import { CreatePost, CreatePostUseCaseInterface } from '@domain/post/usecases/create-post-usecase';
+import {
+  CreatePost,
+  CreatePostUseCaseInterface,
+} from '@domain/post/usecases/create-post-usecase';
 import { PostRepository } from '@infrastructure/database/repositories/post.repository';
 import { UserRepository } from '@infrastructure/database/repositories/user.repository';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -19,7 +22,7 @@ export class CreatePostUseCase implements CreatePostUseCaseInterface {
     const AuthorExists = await this.userRepository.findById(authorId);
 
     if (!AuthorExists) {
-      throw new HttpException('Author Does not exists', HttpStatus.CONFLICT);
+      throw new HttpException('Author Does not  exists', HttpStatus.CONFLICT);
     }
 
     const post = await this.postsRepository.create({

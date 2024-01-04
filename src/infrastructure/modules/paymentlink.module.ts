@@ -4,7 +4,6 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [PrismaModule],
-  controllers: [],
   providers: [PaymentLinkRepository],
 })
 export class CustomerModule {}

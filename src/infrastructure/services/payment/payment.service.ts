@@ -1,4 +1,8 @@
-import { PaymentInterface } from '@application/protocols/payment/payment-interface';
+import {
+  CreatePrice,
+  LineItems,
+  PaymentInterface,
+} from '@application/protocols/payment/payment-interface';
 import envs from '@main/envs';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import Stripe from 'stripe';
@@ -70,6 +74,46 @@ export class PaymentService implements PaymentInterface {
       return customer as T;
     } catch (error) {
       this.ThrowErrorAndLogItOut(error, this.createPaymentIntent.name);
+    }
+  }
+
+  async createPrice<T = Stripe.Price>(data: CreatePrice): Promise<T> {
+    try {
+      const price = await this.stripe.prices.create({
+        currency: data.currency || 'BRL',
+        unit_amount: data.unit_amount,
+        recurring: {
+          interval: data.interval || 'year',
+        },
+        product_data: {
+          name: data.productData.name,
+        },
+        metadata: {
+          postId: data.productData.postId,
+        },
+      });
+
+      return price as T;
+    } catch (error) {
+      this.ThrowErrorAndLogItOut(error, this.createPrice.name);
+    }
+  }
+  async createPaymentLink<T = Stripe.PaymentLink>(
+    data: LineItems[],
+    metadata: { postId: string },
+  ): Promise<T> {
+    try {
+      const paymentLink = await this.stripe.paymentLinks.create({
+        line_items: data,
+        metadata: {
+          postId: metadata.postId,
+        },
+      });
+
+      return paymentLink as T;
+    } catch (error) {
+      console.log(error);
+      this.ThrowErrorAndLogItOut(error, this.createPaymentLink.name);
     }
   }
 }

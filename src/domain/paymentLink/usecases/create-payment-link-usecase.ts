@@ -9,7 +9,7 @@ export namespace CreatePaymentlink {
     postId: string;
     currency: string;
     amount: number;
-    recurringInterval: string;
+    recurringInterval: 'day' | 'month' | 'week' | 'year';
   };
 
   export type Result = {

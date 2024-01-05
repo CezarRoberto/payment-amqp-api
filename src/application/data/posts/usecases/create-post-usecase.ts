@@ -22,7 +22,7 @@ export class CreatePostUseCase implements CreatePostUseCaseInterface {
     const AuthorExists = await this.userRepository.findById(authorId);
 
     if (!AuthorExists) {
-      throw new HttpException('Author Does not  exists', HttpStatus.CONFLICT);
+      throw new HttpException('Author Does not exists', HttpStatus.CONFLICT);
     }
 
     const post = await this.postsRepository.create({

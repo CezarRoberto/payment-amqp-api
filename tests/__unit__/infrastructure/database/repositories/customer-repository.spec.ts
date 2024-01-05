@@ -133,7 +133,7 @@ describe('Customer Repository', () => {
 
       const costumerMock = makeFakeCustomerMock();
 
-      ctxPrisma.customer.findFirst = jest
+      ctxPrisma.customer.findUnique = jest
         .fn()
         .mockResolvedValueOnce(costumerMock);
 
@@ -151,7 +151,7 @@ describe('Customer Repository', () => {
     test('should be able to throw PrismaClientKnownRequestError', async () => {
       const { ctxLogger, ctxPrisma, sut } = await makeSut();
 
-      ctxPrisma.customer.findFirst = jest.fn().mockRejectedValue(
+      ctxPrisma.customer.findUnique = jest.fn().mockRejectedValue(
         new PrismaClientKnownRequestError('error_findById_method', {
           clientVersion: 'client1',
           code: '300',
@@ -181,7 +181,7 @@ describe('Customer Repository', () => {
     test('should be able to throw PrismaClientRustPanicError', async () => {
       const { ctxLogger, ctxPrisma, sut } = await makeSut();
 
-      ctxPrisma.customer.findFirst = jest
+      ctxPrisma.customer.findUnique = jest
         .fn()
         .mockRejectedValue(
           new PrismaClientRustPanicError('error_findById_method', '200'),

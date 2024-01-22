@@ -1,3 +1,4 @@
+import { CreatePrice } from '@application/protocols/payment/payment-interface';
 import { MyLoggerService } from '@infrastructure/services/logger/logger.service';
 import { PaymentService } from '@infrastructure/services/payment/payment.service';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -12,6 +13,12 @@ jest.mock('stripe', () => {
         list: jest.fn().mockImplementationOnce(() => []),
       },
       paymentIntents: {
+        create: jest.fn(),
+      },
+      prices: {
+        create: jest.fn(),
+      },
+      paymentLinks: {
         create: jest.fn(),
       },
       errors: {
@@ -92,5 +99,52 @@ describe('Stripe Payment Service', () => {
     const result = await sut.findCustomer(makeFindCustomerList.email);
 
     expect(result).toBe(testFindCustomerList);
+  });
+
+  test('should be able to list a create a new price ', async () => {
+    const { ctxLogger, sut } = await makeSut();
+
+    const makePriceFake: CreatePrice = {
+      currency: 'BRL',
+      unit_amount: 20,
+      interval: 'day',
+      productData: {
+        name: 'Product Name',
+        postId: 'ec6b8a2d-0eb2-4f50-8355-0c875a70a97c',
+      },
+    };
+
+    let testPrice: Promise<Stripe.Stripe.Price>;
+    jest.spyOn(ctxLogger, 'error').mockImplementation(() => new Error('ERROR'));
+
+    const result = await sut.createPrice(makePriceFake);
+
+    expect(result).toBe(testPrice);
+  });
+
+  test('should be able to list a create a new price ', async () => {
+    const { ctxLogger, sut } = await makeSut();
+
+    const makeFakePaymentLink = {
+      data: [
+        {
+          price: 'price_1MoBy5LkdIwHu7ixZhnattbh',
+          quantity: 2,
+        },
+      ],
+      metadata: {
+        postId: 'e4970293-a746-46cd-8e41-ba1c983f32eb',
+      },
+    };
+
+    let testPaymentLink: Promise<Stripe.Stripe.PaymentLink>;
+    jest.spyOn(ctxLogger, 'error').mockImplementation(() => new Error('ERROR'));
+
+    const result = await sut.createPaymentLink(
+      makeFakePaymentLink.data,
+      makeFakePaymentLink.metadata,
+    );
+
+    expect(result).toBe(testPaymentLink);
   });
 });

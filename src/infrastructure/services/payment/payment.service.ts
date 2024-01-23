@@ -12,6 +12,7 @@ import { MyLoggerService } from '../logger/logger.service';
 export class PaymentService implements PaymentInterface {
   protected stripe: Stripe;
   readonly envs: any;
+  protected secretEndpointKey: string;
 
   constructor(private readonly loggerService: MyLoggerService) {
     this.envs = envs();
@@ -35,6 +36,7 @@ export class PaymentService implements PaymentInterface {
     email: string,
   ): Promise<T> {
     try {
+      this.stripe.webhooks.constructEvent;
       const costumer = await this.stripe.customers.create({
         name,
         email,
@@ -114,6 +116,24 @@ export class PaymentService implements PaymentInterface {
     } catch (error) {
       console.log(error);
       this.ThrowErrorAndLogItOut(error, this.createPaymentLink.name);
+    }
+  }
+
+  signatureEvent<T = Stripe.Event>(
+    data: 'string' | Buffer,
+    signatureKey: string,
+  ): T {
+    try {
+      const signature = this.stripe.webhooks.constructEvent(
+        data,
+        signatureKey,
+        this.secretEndpointKey,
+      );
+
+      return signature as T;
+    } catch (error) {
+      console.log(error);
+      this.ThrowErrorAndLogItOut(error, this.signatureEvent.name);
     }
   }
 }

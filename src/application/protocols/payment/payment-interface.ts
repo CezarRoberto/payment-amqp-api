@@ -7,6 +7,8 @@ export interface PaymentInterface {
     data: LineItems[],
     metadata: { postId: string },
   ): Promise<T>;
+
+  signatureEvent<T>(data: 'string' | Buffer, signatureKey: unknown): T;
 }
 
 export type LineItems = {

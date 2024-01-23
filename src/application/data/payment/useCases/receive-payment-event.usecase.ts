@@ -13,7 +13,7 @@ export class ReceivePaymentEventsUseCase
   ) {}
 
   async execute(
-    data: 'string' | Buffer,
+    data: 'string' | Buffer | any,
     signatureHeader: string,
   ): Promise<void> {
     try {
